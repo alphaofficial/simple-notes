@@ -1,16 +1,20 @@
 import { BaseEntity } from '../abstract/base.entity';
+import { Block } from '@/api/interfaces/note.interface';
 
-type NoteContent = Record<string, unknown>;
 type NoteMeta = Record<string, unknown>;
 export class NoteEntity extends BaseEntity {
-	public readonly title: string;
-	public readonly content: NoteContent;
-	public readonly meta?: NoteMeta;
+  public title: string;
+  public blocks: Block[];
+  public meta?: NoteMeta;
 
-	constructor({ title, content, meta }) {
-		super();
-		this.title = title;
-		this.content = content;
-		this.meta = meta;
-	}
+  constructor({ title, blocks, meta }) {
+    super();
+    this.title = title;
+    this.blocks = blocks;
+    this.meta = meta;
+  }
+
+  public updateNote(update: Partial<NoteEntity>) {
+    Object.assign(this, update);
+  }
 }

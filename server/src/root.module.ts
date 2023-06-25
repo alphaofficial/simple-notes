@@ -4,6 +4,6 @@ import { EventsModule } from './infra/eventEmitter/event.module';
 import { PersistenceModule } from './infra/persistence/persistence.module';
 
 @Module({
-	imports: [ApiModule, PersistenceModule, EventsModule],
+  imports: [ApiModule, PersistenceModule, EventsModule],
 })
 export class RootModule {}
