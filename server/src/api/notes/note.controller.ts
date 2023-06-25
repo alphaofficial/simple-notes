@@ -20,7 +20,7 @@ import { LoggerInterface } from '../interfaces/logger.interface';
 import { NoteServiceInterface } from '@/api/interfaces/note.service.interface';
 import { CreateNoteDto } from '@/api/notes/dto/createNote.dto';
 import { InvalidNoteId } from '@/core/notes/note.exceptions';
-import { isNumberString } from '@/shared/utilities/validation';
+import { isNumberString } from '@/tools/utilities/validation';
 
 @Controller('notes')
 export class NoteController extends BaseController {
