@@ -18,6 +18,7 @@ module.exports = {
     '.schema.ts',
     '.module.ts',
     'migrations',
+    '.dto.ts',
   ],
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
