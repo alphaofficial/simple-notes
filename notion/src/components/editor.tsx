@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 import { useNoteStore } from '@/store/noteStore';
 import useUpdateNoteMutation from '@/hooks/useUpdateNoteMutation';
-import EmojiPicker, { Emoji, EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { Emoji } from 'emoji-picker-react';
 import { queryClient } from '@/lib/queryClient';
 import { QUERY_KEYS } from '@/hooks/queryKeys';
 
@@ -142,7 +142,7 @@ const Editor = () => {
               onEmojiClick={async (data, ev) => {
                 setEmoji(data.unified);
                 setShowEmojiPicker(false);
-                const response = await mutation.mutateAsync({
+                await mutation.mutateAsync({
                   id: currentNote?.id!,
                   data: {
                     // @ts-ignore
