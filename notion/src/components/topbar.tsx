@@ -1,5 +1,6 @@
 'use client';
 import { useNoteStore } from '@/store/noteStore';
+import { Emoji } from 'emoji-picker-react';
 import React from 'react';
 
 export type TopBarProps = {
@@ -14,7 +15,10 @@ export default function TopBar() {
   );
   return (
     <div className="h-10 flex flex-row items-center px-2">
-      <div>
+      <div className="flex flex-row items-center space-x-2">
+        <div>
+          <Emoji unified={currentNote?.meta?.emoji! ?? '1f423'} size={15} />
+        </div>
         <p className="text-sm">{titleBlock?.content ?? currentNote?.title}</p>
       </div>
     </div>
