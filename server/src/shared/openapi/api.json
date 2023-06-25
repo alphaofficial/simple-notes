@@ -1,1 +1,179 @@
-{"openapi":"3.0.0","paths":{"/notes/createNote":{"post":{"operationId":"createNote","parameters":[],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateNoteDto"}}}},"responses":{"201":{"description":"The note has been successfully created.","content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"string","description":"The id of the note"},"title":{"type":"string","description":"The title of the note"},"blocks":{"type":"array","description":"The blocks of the note","items":{"type":"object","properties":{"type":{"type":"string","description":"The type of the block"},"data":{"type":"object","description":"The data of the block"}}}},"meta":{"type":"object","description":"The meta of the note"}}}}}}}}},"/notes/getNotes":{"get":{"operationId":"getNotes","parameters":[],"responses":{"200":{"description":"The notes have been successfully retrieved.","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string","description":"The id of the note"},"title":{"type":"string","description":"The title of the note"},"blocks":{"type":"array","description":"The blocks of the note","items":{"type":"object","properties":{"type":{"type":"string","description":"The type of the block"},"data":{"type":"object","description":"The data of the block"}}}},"meta":{"type":"object","description":"The meta of the note"}}}}}}}}}},"/notes/getNote/{id}":{"get":{"operationId":"getNote","parameters":[{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":""}}}},"/notes/updateNote/{id}":{"post":{"operationId":"updateNote","parameters":[{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateNoteDto"}}}},"responses":{"201":{"description":""}}}}},"info":{"title":"NotesApp API","description":"The NotesApp API description","version":"1.0","contact":{}},"tags":[],"servers":[],"components":{"schemas":{"CreateNoteDto":{"type":"object","properties":{"title":{"type":"string"},"blocks":{"type":"array","items":{"type":"string"}},"meta":{"type":"object"}},"required":["title","blocks","meta"]},"UpdateNoteDto":{"type":"object","properties":{"title":{"type":"string"},"blocks":{"type":"array","items":{"type":"string"}},"meta":{"type":"object"}}}}}}
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/notes/createNote": {
+      "post": {
+        "operationId": "createNote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateNoteDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The note has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The id of the note"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "The title of the note"
+                    },
+                    "blocks": {
+                      "type": "array",
+                      "description": "The blocks of the note",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "The type of the block"
+                          },
+                          "data": {
+                            "type": "object",
+                            "description": "The data of the block"
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "description": "The meta of the note"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/getNotes": {
+      "get": {
+        "operationId": "getNotes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The notes have been successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The id of the note"
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "The title of the note"
+                      },
+                      "blocks": {
+                        "type": "array",
+                        "description": "The blocks of the note",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "description": "The type of the block"
+                            },
+                            "data": {
+                              "type": "object",
+                              "description": "The data of the block"
+                            }
+                          }
+                        }
+                      },
+                      "meta": {
+                        "type": "object",
+                        "description": "The meta of the note"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/getNote/{id}": {
+      "get": {
+        "operationId": "getNote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/notes/updateNote/{id}": {
+      "post": {
+        "operationId": "updateNote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateNoteDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } }
+      }
+    }
+  },
+  "info": {
+    "title": "NotesApp API",
+    "description": "The NotesApp API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateNoteDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "blocks": { "type": "array", "items": { "type": "string" } },
+          "meta": { "type": "object" }
+        },
+        "required": ["title", "blocks", "meta"]
+      },
+      "UpdateNoteDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "blocks": { "type": "array", "items": { "type": "string" } },
+          "meta": { "type": "object" }
+        }
+      }
+    }
+  }
+}
