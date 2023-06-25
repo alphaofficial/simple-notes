@@ -5,9 +5,10 @@ import useNotesQuery from '@/hooks/useNotesQuery';
 import { queryClient } from '@/lib/queryClient';
 import { getNotes } from '@/services/notes';
 import { dehydrate } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/hooks/queryKeys';
 
 export async function getServerSideProps() {
-  await queryClient.prefetchQuery(['notes'], getNotes);
+  await queryClient.prefetchQuery([QUERY_KEYS.notes], getNotes);
 
   return {
     props: {

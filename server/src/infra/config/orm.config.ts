@@ -1,13 +1,13 @@
 import { EntityCaseNamingStrategy, Options } from '@mikro-orm/core';
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 import { SqliteDriver } from '@mikro-orm/sqlite';
-import { isProduction } from './app.config';
+import config, { isProduction } from './app.config';
 
 const ormOptions: Options = {
   type: 'sqlite',
   entities: ['**/schema/*.schema.js'],
   entitiesTs: ['**/schema/*.schema.ts'],
-  dbName: 'test.db',
+  dbName: config.database.name,
   debug: !isProduction,
   driver: SqliteDriver,
   namingStrategy: EntityCaseNamingStrategy,

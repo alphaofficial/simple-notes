@@ -44,3 +44,5 @@ ecosystem.config.js
 .eslintcache
 
 coverage
+notion.db
+test.db

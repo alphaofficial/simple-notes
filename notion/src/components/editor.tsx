@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 import { useNoteStore } from '@/store/noteStore';
 import useUpdateNoteMutation from '@/hooks/useUpdateNoteMutation';
+import EmojiPicker, { Emoji, EmojiClickData } from 'emoji-picker-react';
+import { queryClient } from '@/lib/queryClient';
+import { QUERY_KEYS } from '@/hooks/queryKeys';
 
 const initialId = v4();
 
@@ -11,6 +14,8 @@ const Editor = () => {
   const mutation = useUpdateNoteMutation();
   const [selectedId, setSelectedId] = useState(initialId);
   const editorRef = React.useRef<HTMLDivElement>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [emoji, setEmoji] = useState(currentNote?.meta?.emoji ?? '1f423');
 
   const handleContentChange = (e: any, id: string) => {
     const content = e.target.innerText;
@@ -96,6 +101,13 @@ const Editor = () => {
     setCaretToEnd(selectedId);
   }, [selectedId, blocks]);
 
+  const onEmojiClick = (
+    data: EmojiClickData,
+    event: React.MouseEvent<Element, MouseEvent>,
+  ) => {
+    console.log(data);
+  };
+
   const defaultBackground =
     'linear-gradient(to right, rgb(29, 78, 216), rgb(30, 64, 175), rgb(17, 24, 39))';
 
@@ -107,7 +119,47 @@ const Editor = () => {
           background: currentNote?.meta?.banner?.value ?? defaultBackground,
         }}
       ></div>
-      <div className="flex flex-row justify-center mt-8">
+      <div
+        className="p-2"
+        style={{
+          position: 'absolute',
+          top: '15.3rem',
+          left: '27rem',
+        }}
+      >
+        <div
+          className="cursor-pointer"
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        >
+          <Emoji unified={emoji} size={50} />
+        </div>
+      </div>
+      <div>
+        {showEmojiPicker && (
+          <div style={{ position: 'absolute', top: '19rem', left: '18rem' }}>
+            <EmojiPicker
+              onEmojiClick={async (data, ev) => {
+                setEmoji(data.unified);
+                const response = await mutation.mutateAsync({
+                  id: currentNote?.id!,
+                  data: {
+                    ...currentNote,
+                    // @ts-ignore
+                    meta: {
+                      ...(currentNote?.meta ?? {}),
+                      emoji: data.unified,
+                    },
+                  },
+                });
+                console.log({ response, data });
+                queryClient.invalidateQueries([QUERY_KEYS.notes]);
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-row justify-center mt-24">
         <div className="w-2/3">
           <div className="editor" ref={editorRef}>
             {blocks.map((block) => (

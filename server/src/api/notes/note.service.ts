@@ -30,7 +30,7 @@ export class NoteService implements NoteServiceInterface {
   async getNotes(): Promise<NoteEntity[]> {
     const notes = await this.noteRepository.findAll({
       offset: 0,
-      limit: 10,
+      limit: 100,
     });
     return notes;
   }
