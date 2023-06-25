@@ -5,6 +5,7 @@ import { Emoji } from 'emoji-picker-react';
 import React from 'react';
 import { LiaCommentSolid } from 'react-icons/lia';
 import { AiOutlineClockCircle, AiOutlineStar } from 'react-icons/ai';
+import { BsThreeDots } from 'react-icons/bs';
 
 export type TopBarProps = {
   title: string;
@@ -39,6 +40,9 @@ export default function TopBar() {
         </button>
         <button>
           <AiOutlineStar size={20} />
+        </button>
+        <button>
+          <BsThreeDots size={20} />
         </button>
       </div>
     </div>
