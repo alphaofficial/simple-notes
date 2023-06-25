@@ -1,5 +1,3 @@
-import { OperationOptions } from 'retry';
-
 export interface ApiResponse {
   statusCode: number;
   message: string;
