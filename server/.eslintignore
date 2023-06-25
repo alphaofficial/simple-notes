@@ -1,0 +1,9 @@
+dist/
+temp
+.env
+.env.example
+**/__tests__/*
+**/__mocks__/*
+jest.config.js
+jest.setup.js
+tests
