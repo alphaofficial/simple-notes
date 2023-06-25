@@ -83,6 +83,7 @@ export class NoteController extends BaseController {
       );
       return this.handleSuccessResponse(data, HttpStatus.CREATED);
     } catch (error) {
+      console.log(error);
       return this.handleErrorResponse(error);
     }
   }

@@ -1,19 +1,15 @@
-import { EntityCaseNamingStrategy } from '@mikro-orm/core';
-import { PostgreSqlDriver, Options } from '@mikro-orm/postgresql'; // or any other driver package
+import { EntityCaseNamingStrategy, Options } from '@mikro-orm/core';
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
-import config, { isProduction } from './app.config';
+import { SqliteDriver } from '@mikro-orm/sqlite';
+import { isProduction } from './app.config';
 
 const ormOptions: Options = {
-  type: 'postgresql',
+  type: 'sqlite',
   entities: ['**/schema/*.schema.js'],
   entitiesTs: ['**/schema/*.schema.ts'],
-  dbName: config.database.name,
-  host: config.database.host,
-  port: config.database.port,
-  user: config.database.user,
-  password: config.database.password,
+  dbName: 'test.db',
   debug: !isProduction,
-  driver: PostgreSqlDriver,
+  driver: SqliteDriver,
   namingStrategy: EntityCaseNamingStrategy,
   highlighter: new SqlHighlighter(),
   migrations: {

@@ -1,12 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 import retry from 'retry';
-import { DomainError } from '@/core/abstract/domain.error';
-import defaultRetryPolicy from '@/infra/config/retry.config';
 import {
   ErrorResponse,
   RetryConfig,
   SuccessResponse,
 } from '@/api/base/base.controller.interface';
+import { DomainError } from '@/core/abstract/domain.error';
+import defaultRetryPolicy from '@/infra/config/retry.config';
 import { logger } from '@/infra/logger/logger';
 
 export abstract class BaseController {

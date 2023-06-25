@@ -1,14 +1,11 @@
 {
-  "namespaces": [
-    "public"
-  ],
-  "name": "public",
+  "namespaces": [],
   "tables": [
     {
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "unsigned": true,
           "autoincrement": true,
           "primary": true,
@@ -17,36 +14,36 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamptz(0)",
+          "type": "datetime",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
+          "length": 0,
           "mappedType": "datetime"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "timestamptz(0)",
+          "type": "datetime",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
+          "length": 0,
           "mappedType": "datetime"
         },
         "title": {
           "name": "title",
-          "type": "varchar(255)",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "string"
+          "mappedType": "text"
         },
         "blocks": {
           "name": "blocks",
-          "type": "jsonb",
+          "type": "json",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -55,7 +52,7 @@
         },
         "meta": {
           "name": "meta",
-          "type": "jsonb",
+          "type": "json",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -64,10 +61,9 @@
         }
       },
       "name": "notes",
-      "schema": "public",
       "indexes": [
         {
-          "keyName": "notes_pkey",
+          "keyName": "primary",
           "columnNames": [
             "id"
           ],
