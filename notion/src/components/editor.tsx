@@ -109,13 +109,6 @@ const Editor = () => {
     }
   }, [selectedId, blocks, currentNote]);
 
-  const onEmojiClick = (
-    data: EmojiClickData,
-    event: React.MouseEvent<Element, MouseEvent>,
-  ) => {
-    console.log(data);
-  };
-
   const defaultBackground =
     'linear-gradient(to right, rgb(29, 78, 216), rgb(30, 64, 175), rgb(17, 24, 39))';
 
@@ -130,9 +123,9 @@ const Editor = () => {
       <div
         className="p-2"
         style={{
-          position: 'absolute',
-          top: '15.3rem',
-          left: '27rem',
+          position: 'relative',
+          top: '-2.4rem',
+          left: '12rem',
         }}
       >
         <div
@@ -144,10 +137,11 @@ const Editor = () => {
       </div>
       <div>
         {showEmojiPicker && (
-          <div style={{ position: 'absolute', top: '19rem', left: '18rem' }}>
+          <div style={{ position: 'relative', top: '-2rem', left: '4rem' }}>
             <EmojiPicker
               onEmojiClick={async (data, ev) => {
                 setEmoji(data.unified);
+                setShowEmojiPicker(false);
                 const response = await mutation.mutateAsync({
                   id: currentNote?.id!,
                   data: {
@@ -158,7 +152,6 @@ const Editor = () => {
                     },
                   },
                 });
-                console.log({ response, data });
                 queryClient.invalidateQueries([QUERY_KEYS.notes]);
               }}
             />
@@ -166,8 +159,8 @@ const Editor = () => {
         )}
       </div>
 
-      <div className="flex flex-row justify-center mt-24">
-        <div className="w-2/3">
+      <div className="flex flex-row justify-center mt-14">
+        <div className="w-full p-6 md:p-0 md:w-2/3">
           <div className="editor" ref={editorRef}>
             {blocks.map((block) => (
               <div key={block.id} className={`w-full block`}>
@@ -199,7 +192,7 @@ const Editor = () => {
                       onFocus={() => setSelectedId(block.id)}
                       placeholder="Enter text..."
                       suppressContentEditableWarning={true}
-                      className="focus:outline-none mb-2"
+                      className="focus:outline-none mb-3"
                     >
                       {block.content}
                     </div>

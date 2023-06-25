@@ -12,6 +12,7 @@ import useCreateNoteMutation from '@/hooks/useCreateNoteMutation';
 import { queryClient } from '@/lib/queryClient';
 import { v4 } from 'uuid';
 import { truncate } from '@/utilities/truncate';
+import { Emoji } from 'emoji-picker-react';
 
 type NoteListItemProps = {
   note: NoteInterface;
@@ -38,8 +39,11 @@ const NoteListItem: React.FC<NoteListItemProps> = ({ note }) => {
       <div className="text-gray-500">
         <RxCaretRight size={20} className="text-gray-500" />
       </div>
-      <div className="font-semibold text-gray-500">
-        {truncate(note.title, 30)}
+      <div className="font-semibold text-gray-500 flex flex-row items-center space-x-2">
+        <div>
+          <Emoji unified={note.meta?.emoji! ?? '1f423'} size={15} />
+        </div>
+        <div>{truncate(note.title, 30)}</div>
       </div>
     </div>
   );
