@@ -27,3 +27,10 @@ $ npm install
 # Run the app
 $ npm dev
 ```
+
+## Todo
+
+- authentication
+- mobile responsiveness
+- tests
+- improve note taking features
