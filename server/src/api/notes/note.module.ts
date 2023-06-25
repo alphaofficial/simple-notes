@@ -5,7 +5,6 @@ import { NoteController } from './note.controller';
 import { NoteService } from './note.service';
 import { NoteEntity } from '@/core/notes/note.entity';
 import { logger } from '@/infra/logger/logger';
-import { InMemoryCacheFactory } from '@/infra/persistence/cache/cacheProviders';
 
 @Module({
   imports: [MikroOrmModule.forFeature([NoteEntity])],
@@ -22,10 +21,6 @@ import { InMemoryCacheFactory } from '@/infra/persistence/cache/cacheProviders';
     {
       provide: 'DatabaseAdapterInterface',
       useExisting: MikroORM,
-    },
-    {
-      provide: 'CacheInterface',
-      ...InMemoryCacheFactory,
     },
   ],
 })

@@ -1,17 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
-import retry from 'retry';
 import {
   ErrorResponse,
-  RetryConfig,
   SuccessResponse,
 } from '@/api/base/base.controller.interface';
 import { DomainError } from '@/core/abstract/domain.error';
-import defaultRetryPolicy from '@/infra/config/retry.config';
-import { logger } from '@/infra/logger/logger';
 
 export abstract class BaseController {
-  private readonly defaultRetryableExceptions = ['ConnectionException'];
-
   protected handleSuccessResponse<T>(
     data: T,
     httpStatus?: HttpStatus,
@@ -36,44 +30,5 @@ export abstract class BaseController {
       error: isDomainError ? error.message : 'An unexpected error occurred',
       ...(meta ?? {}),
     };
-  }
-
-  protected async executeWithRetries<T>(
-    fn: () => Promise<T>,
-    retryConfig: Partial<RetryConfig> = {},
-  ): Promise<T> {
-    const {
-      scope = 'executeWithRetries',
-      params = {},
-      retryableExceptions = [],
-      ...retryPolicy
-    } = retryConfig;
-
-    const operation = retry.operation({
-      ...defaultRetryPolicy,
-      ...retryPolicy,
-    });
-
-    return new Promise((resolve, reject) => {
-      operation.attempt((currentAttempt: number) => {
-        fn()
-          .then(resolve)
-          .catch((error) => {
-            const hasRetryableExceptions = [
-              ...this.defaultRetryableExceptions,
-              ...retryableExceptions,
-            ].includes(error.constructor.name);
-
-            if (hasRetryableExceptions && operation.retry(error as Error)) {
-              logger.info(scope, 'Retrying, operation', {
-                currentAttempt,
-                params,
-              });
-              return;
-            }
-            reject(operation.mainError() || error);
-          });
-      });
-    });
   }
 }

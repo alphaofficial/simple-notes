@@ -15,9 +15,3 @@ export interface ErrorResponse extends ApiResponse {
 }
 
 export type Either<T, U> = T | U;
-
-export type RetryConfig = OperationOptions & {
-  scope?: string;
-  params?: Record<string, unknown>;
-  retryableExceptions?: string[];
-};

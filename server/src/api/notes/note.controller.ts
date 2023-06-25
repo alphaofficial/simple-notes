@@ -16,6 +16,7 @@ import {
   UpdateNoteReturnType,
 } from './note.controller.interface';
 import { BaseController } from '../base/base.controller';
+import { LoggerInterface } from '../interfaces/logger.interface';
 import { NoteServiceInterface } from '@/api/interfaces/note.service.interface';
 import { CreateNoteDto } from '@/api/notes/dto/createNote.dto';
 import { InvalidNoteId } from '@/core/notes/note.exceptions';
@@ -26,13 +27,11 @@ export class NoteController extends BaseController {
   constructor(
     @Inject('NoteServiceInterface')
     private readonly noteService: NoteServiceInterface,
+    @Inject('LoggerInterface')
+    protected readonly logger: LoggerInterface,
   ) {
     super();
   }
-
-  private readonly retryOptions = {
-    scope: NoteController.name,
-  };
 
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -77,13 +76,12 @@ export class NoteController extends BaseController {
     @Body() createNote: CreateNoteDto,
   ): Promise<CreateNoteReturnType> {
     try {
-      const data = await this.executeWithRetries(
-        async () => await this.noteService.createNote(createNote),
-        this.retryOptions,
-      );
+      const data = await this.noteService.createNote(createNote);
       return this.handleSuccessResponse(data, HttpStatus.CREATED);
     } catch (error) {
-      console.log(error);
+      this.logger.error('createNote', error.message, {
+        stack: error.stack,
+      });
       return this.handleErrorResponse(error);
     }
   }
@@ -133,12 +131,12 @@ export class NoteController extends BaseController {
   @Get('getNotes')
   async getNotes(): Promise<GetNotesReturnType> {
     try {
-      const data = await this.executeWithRetries(async () =>
-        this.noteService.getNotes(),
-      );
+      const data = await this.noteService.getNotes();
       return this.handleSuccessResponse(data);
     } catch (error) {
-      console.log(error);
+      this.logger.error('getNotes', error.message, {
+        stack: error.stack,
+      });
       return this.handleErrorResponse(error);
     }
   }
@@ -149,12 +147,12 @@ export class NoteController extends BaseController {
       if (!isNumberString(id)) {
         throw new InvalidNoteId();
       }
-      const data = await this.executeWithRetries(async () =>
-        this.noteService.getNote(Number(id)),
-      );
+      const data = await this.noteService.getNote(Number(id));
       return this.handleSuccessResponse(data);
     } catch (error) {
-      console.log(error);
+      this.logger.error('getNote', error.message, {
+        stack: error.stack,
+      });
       return this.handleErrorResponse(error);
     }
   }
@@ -168,12 +166,12 @@ export class NoteController extends BaseController {
       if (!isNumberString(id)) {
         throw new InvalidNoteId();
       }
-      const data = await this.executeWithRetries(async () =>
-        this.noteService.updateNote(Number(id), updateDto),
-      );
+      const data = await this.noteService.updateNote(Number(id), updateDto);
       return this.handleSuccessResponse(data);
     } catch (error) {
-      console.log(error);
+      this.logger.error('updateNote', error.message, {
+        stack: error.stack,
+      });
       return this.handleErrorResponse(error);
     }
   }
