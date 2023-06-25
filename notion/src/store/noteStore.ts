@@ -50,6 +50,7 @@ export const useNoteStore = store.create<NoteStore>((set) => ({
     }),
   updateBlock(id, content, blockType) {
     set((state) => ({
+      // TODO: use proper types
       blocks: state.blocks.map((block: any) => {
         if (block.id === id) {
           block.type = blockType ?? block.type;
@@ -61,6 +62,7 @@ export const useNoteStore = store.create<NoteStore>((set) => ({
   },
   removeBlock: (id: string) => {
     set((state) => ({
+      // TODO: use proper types
       blocks: state.blocks.filter((block: any) => block.id !== id),
     }));
   },
@@ -68,6 +70,7 @@ export const useNoteStore = store.create<NoteStore>((set) => ({
     set(() => ({ notes }));
   },
   setCurrentNote: (note: NoteInterface) => {
+    sessionStorage.setItem('lastNoteId', String(note.id));
     set(() => ({ currentNote: note, blocks: note.blocks }));
   },
 }));

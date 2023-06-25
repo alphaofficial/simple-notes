@@ -15,8 +15,9 @@ const Editor = () => {
   const [selectedId, setSelectedId] = useState(initialId);
   const editorRef = React.useRef<HTMLDivElement>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [emoji, setEmoji] = useState(currentNote?.meta?.emoji ?? '1f423');
+  const [emoji, setEmoji] = useState('1f423');
 
+  // TODO: use proper types
   const handleContentChange = (e: any, id: string) => {
     const content = e.target.innerText;
     updateBlock(id, content);
@@ -31,6 +32,7 @@ const Editor = () => {
     setCaretToEnd(id);
   };
 
+  // TODO: use proper types
   const handleKeyPress = (e: any) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -99,7 +101,13 @@ const Editor = () => {
 
   useEffect(() => {
     setCaretToEnd(selectedId);
-  }, [selectedId, blocks]);
+    if (currentNote?.meta?.emoji) {
+      currentNote?.meta?.emoji;
+      setEmoji(currentNote?.meta?.emoji);
+    } else {
+      setEmoji('1f423');
+    }
+  }, [selectedId, blocks, currentNote]);
 
   const onEmojiClick = (
     data: EmojiClickData,
@@ -143,7 +151,6 @@ const Editor = () => {
                 const response = await mutation.mutateAsync({
                   id: currentNote?.id!,
                   data: {
-                    ...currentNote,
                     // @ts-ignore
                     meta: {
                       ...(currentNote?.meta ?? {}),

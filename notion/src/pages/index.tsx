@@ -6,6 +6,8 @@ import { queryClient } from '@/lib/queryClient';
 import { getNotes } from '@/services/notes';
 import { dehydrate } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/hooks/queryKeys';
+import { useEffect } from 'react';
+import { useNoteStore } from '@/store/noteStore';
 
 export async function getServerSideProps() {
   await queryClient.prefetchQuery([QUERY_KEYS.notes], getNotes);
@@ -18,6 +20,17 @@ export async function getServerSideProps() {
 }
 
 export default function Home() {
+  const { notes } = useNotesQuery();
+  const { setCurrentNote } = useNoteStore();
+  useEffect(() => {
+    if (notes.length) {
+      const lastNoteCachedId = sessionStorage.getItem('lastNoteId');
+      const lastNote = notes.find(
+        (note) => note.id === Number(lastNoteCachedId),
+      );
+      setCurrentNote(lastNote ?? notes[0]);
+    }
+  }, [notes, setCurrentNote]);
   return (
     <main>
       <div className="max-h-screen flex flex-row">

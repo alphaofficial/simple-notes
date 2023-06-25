@@ -114,6 +114,7 @@ export default function Sidebar() {
               value:
                 'linear-gradient(to right, rgb(236, 72, 153), rgb(239, 68, 68), rgb(234, 179, 8))',
             },
+            emoji: '1f4d3',
           },
         });
         // setCurrentNote to the newly created note

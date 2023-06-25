@@ -5,6 +5,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 export class NoteEvents {
   constructor(private readonly eventEmitter: EventEmitter2) {}
 
+  // TODO: use proper types
   noteCreated(note: any) {
     this.eventEmitter.emit('note.created', note);
   }
