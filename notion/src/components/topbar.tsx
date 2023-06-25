@@ -21,13 +21,20 @@ export default function TopBar() {
     <div className="h-10 flex flex-row justify-between items-center px-2">
       <div className="flex flex-row items-center space-x-2">
         <div>
-          <Emoji unified={currentNote?.meta?.emoji! ?? '1f423'} size={15} />
+          <Emoji
+            unified={(currentNote?.meta?.emoji as string) ?? '1f423'}
+            size={15}
+          />
         </div>
         <p className="text-sm">{titleBlock?.content ?? currentNote?.title}</p>
       </div>
       <div className="flex flex-row items-center space-x-3 text-sm">
         <div className="text-gray-600">
-          {`${formatDate(currentNote?.updatedAt! ?? currentNote?.createdAt!)}`}
+          {currentNote
+            ? `Edited ${formatDate(
+                (currentNote?.updatedAt as string) ?? currentNote?.createdAt,
+              )}`
+            : ''}
         </div>
         <div>
           <button>Share</button>
