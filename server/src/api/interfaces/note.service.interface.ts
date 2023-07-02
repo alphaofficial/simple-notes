@@ -9,4 +9,5 @@ export interface NoteServiceInterface {
     id: number,
     updateNoteDto: Partial<NoteEntity>,
   ) => Promise<NoteEntity>;
+  deleteNote: (id: number) => Promise<void>;
 }

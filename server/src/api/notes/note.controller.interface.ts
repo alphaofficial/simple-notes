@@ -24,3 +24,5 @@ export type UpdateNoteReturnType = Either<
   SuccessResponse<NoteEntity>,
   ErrorResponse
 >;
+
+export type DeleteNoteReturnType = Either<SuccessResponse<void>, ErrorResponse>;

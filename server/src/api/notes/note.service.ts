@@ -46,4 +46,10 @@ export class NoteService implements NoteServiceInterface {
     await this.databaseAdapter.em.persistAndFlush(note);
     return note;
   }
+
+  async deleteNote(id: number): Promise<void> {
+    const note = await this.noteRepository.findOne({ id });
+    if (!note) return;
+    await this.databaseAdapter.em.removeAndFlush(note);
+  }
 }

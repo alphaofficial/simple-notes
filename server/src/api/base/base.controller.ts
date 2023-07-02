@@ -7,7 +7,7 @@ import { DomainError } from '@/core/abstract/domain.error';
 
 export abstract class BaseController {
   protected handleSuccessResponse<T>(
-    data: T,
+    data?: T,
     httpStatus?: HttpStatus,
   ): SuccessResponse<T> {
     return {

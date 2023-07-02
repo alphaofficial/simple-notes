@@ -11,6 +11,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import { UpdateNoteDto } from './dto/updateNote.dto';
 import {
   CreateNoteReturnType,
+  DeleteNoteReturnType,
   GetNoteReturnType,
   GetNotesReturnType,
   UpdateNoteReturnType,
@@ -170,6 +171,22 @@ export class NoteController extends BaseController {
       return this.handleSuccessResponse(data);
     } catch (error) {
       this.logger.error('updateNote', error.message, {
+        stack: error.stack,
+      });
+      return this.handleErrorResponse(error);
+    }
+  }
+
+  @Post('deleteNote/:id')
+  async deleteNote(@Param('id') id: string): Promise<DeleteNoteReturnType> {
+    try {
+      if (!isNumberString(id)) {
+        throw new InvalidNoteId();
+      }
+      await this.noteService.deleteNote(Number(id));
+      return this.handleSuccessResponse();
+    } catch (error) {
+      this.logger.error('deleteNote', error.message, {
         stack: error.stack,
       });
       return this.handleErrorResponse(error);
