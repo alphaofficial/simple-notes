@@ -18,5 +18,14 @@ export const NoteSchema = new EntitySchema<NoteEntity>({
       type: 'json',
       nullable: true,
     },
+    ownerId: {
+      type: 'string',
+      nullable: true,
+    },
+    isFavorite: {
+      type: 'boolean',
+      nullable: true,
+      default: false,
+    },
   },
 });

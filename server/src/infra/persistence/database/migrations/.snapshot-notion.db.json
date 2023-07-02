@@ -58,6 +58,25 @@
           "primary": false,
           "nullable": true,
           "mappedType": "json"
+        },
+        "ownerId": {
+          "name": "ownerId",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "isFavorite": {
+          "name": "isFavorite",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "default": "false",
+          "mappedType": "integer"
         }
       },
       "name": "notes",

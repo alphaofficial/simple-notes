@@ -21,6 +21,7 @@
     "migrate:down": "mikro-orm migration:down"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.10.14",
     "@mikro-orm/core": "^5.7.12",
     "@mikro-orm/migrations": "^5.7.12",
     "@mikro-orm/nestjs": "^5.1.8",
@@ -31,6 +32,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/event-emitter": "^1.4.1",
     "@nestjs/mapped-types": "^1.2.2",
+    "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^7.0.4",
     "axios": "^1.4.0",
@@ -39,6 +41,8 @@
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
     "dotenv-defaults": "^5.0.2",
+    "passport": "^0.6.0",
+    "passport-http": "^0.3.0",
     "pino-http": "^8.3.3",
     "pino-pretty": "^10.0.0",
     "reflect-metadata": "^0.1.13",

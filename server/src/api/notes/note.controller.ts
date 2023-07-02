@@ -6,6 +6,8 @@ import {
   Inject,
   Param,
   Post,
+  UseGuards,
+  Headers,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { UpdateNoteDto } from './dto/updateNote.dto';
@@ -20,9 +22,11 @@ import { BaseController } from '../base/base.controller';
 import { LoggerInterface } from '../interfaces/logger.interface';
 import { NoteServiceInterface } from '@/api/interfaces/note.service.interface';
 import { CreateNoteDto } from '@/api/notes/dto/createNote.dto';
-import { InvalidNoteId } from '@/core/notes/note.exceptions';
+import { InvalidNoteId, MissingUserId } from '@/core/notes/note.exceptions';
+import { BasicAuthGuard } from '@/infra/auth/basicAuthGuard';
 import { isNumberString } from '@/tools/utilities/validation';
 
+@UseGuards(BasicAuthGuard)
 @Controller('notes')
 export class NoteController extends BaseController {
   constructor(
@@ -75,9 +79,13 @@ export class NoteController extends BaseController {
   @Post('createNote')
   async createNote(
     @Body() createNote: CreateNoteDto,
+    @Headers('x-notion-userid') userId: string,
   ): Promise<CreateNoteReturnType> {
     try {
-      const data = await this.noteService.createNote(createNote);
+      if (!userId) {
+        throw new MissingUserId();
+      }
+      const data = await this.noteService.createNote(userId, createNote);
       return this.handleSuccessResponse(data, HttpStatus.CREATED);
     } catch (error) {
       this.logger.error('createNote', error.message, {
@@ -130,9 +138,14 @@ export class NoteController extends BaseController {
     },
   })
   @Get('getNotes')
-  async getNotes(): Promise<GetNotesReturnType> {
+  async getNotes(
+    @Headers('x-notion-userid') userId: string,
+  ): Promise<GetNotesReturnType> {
     try {
-      const data = await this.noteService.getNotes();
+      if (!userId) {
+        throw new MissingUserId();
+      }
+      const data = await this.noteService.getNotes(userId);
       return this.handleSuccessResponse(data);
     } catch (error) {
       this.logger.error('getNotes', error.message, {
@@ -143,12 +156,18 @@ export class NoteController extends BaseController {
   }
 
   @Get('getNote/:id')
-  async getNote(@Param('id') id: string): Promise<GetNoteReturnType> {
+  async getNote(
+    @Param('id') id: string,
+    @Headers('x-notion-userid') userId: string,
+  ): Promise<GetNoteReturnType> {
     try {
+      if (!userId) {
+        throw new MissingUserId();
+      }
       if (!isNumberString(id)) {
         throw new InvalidNoteId();
       }
-      const data = await this.noteService.getNote(Number(id));
+      const data = await this.noteService.getNote(userId, Number(id));
       return this.handleSuccessResponse(data);
     } catch (error) {
       this.logger.error('getNote', error.message, {
@@ -162,12 +181,20 @@ export class NoteController extends BaseController {
   async updateNote(
     @Param('id') id: string,
     @Body() updateDto: UpdateNoteDto,
+    @Headers('x-notion-userid') userId: string,
   ): Promise<UpdateNoteReturnType> {
     try {
+      if (!userId) {
+        throw new MissingUserId();
+      }
       if (!isNumberString(id)) {
         throw new InvalidNoteId();
       }
-      const data = await this.noteService.updateNote(Number(id), updateDto);
+      const data = await this.noteService.updateNote(
+        userId,
+        Number(id),
+        updateDto,
+      );
       return this.handleSuccessResponse(data);
     } catch (error) {
       this.logger.error('updateNote', error.message, {
@@ -178,12 +205,18 @@ export class NoteController extends BaseController {
   }
 
   @Post('deleteNote/:id')
-  async deleteNote(@Param('id') id: string): Promise<DeleteNoteReturnType> {
+  async deleteNote(
+    @Param('id') id: string,
+    @Headers('x-notion-userid') userId: string,
+  ): Promise<DeleteNoteReturnType> {
     try {
+      if (!userId) {
+        throw new MissingUserId();
+      }
       if (!isNumberString(id)) {
         throw new InvalidNoteId();
       }
-      await this.noteService.deleteNote(Number(id));
+      await this.noteService.deleteNote(userId, Number(id));
       return this.handleSuccessResponse();
     } catch (error) {
       this.logger.error('deleteNote', error.message, {
