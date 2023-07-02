@@ -23,10 +23,8 @@ import { LoggerInterface } from '../interfaces/logger.interface';
 import { NoteServiceInterface } from '@/api/interfaces/note.service.interface';
 import { CreateNoteDto } from '@/api/notes/dto/createNote.dto';
 import { InvalidNoteId, MissingUserId } from '@/core/notes/note.exceptions';
-import { BasicAuthGuard } from '@/infra/auth/basicAuthGuard';
 import { isNumberString } from '@/tools/utilities/validation';
 
-@UseGuards(BasicAuthGuard)
 @Controller('notes')
 export class NoteController extends BaseController {
   constructor(
