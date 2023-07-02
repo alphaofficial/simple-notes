@@ -10,4 +10,5 @@ export interface NoteInterface {
   meta?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
+  ownerId: string;
 }

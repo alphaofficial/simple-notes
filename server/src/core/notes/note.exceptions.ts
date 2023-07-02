@@ -16,3 +16,11 @@ export class InvalidNoteId extends DomainError {
     this.statusCode = HttpStatus.BAD_REQUEST;
   }
 }
+
+export class MissingUserId extends DomainError {
+  constructor() {
+    super();
+    this.message = 'Missing user id';
+    this.statusCode = HttpStatus.UNAUTHORIZED;
+  }
+}
