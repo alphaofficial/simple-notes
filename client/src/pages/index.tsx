@@ -1,12 +1,14 @@
 import { getNotes } from '@/services/notes';
 import { QUERY_KEYS } from '@/hooks/queryKeys';
 import { SWRConfig, unstable_serialize } from 'swr';
-import Layout from '@/components/layout';
+import RootLayout from '@/components/rootLayout';
+import { NoteInterface } from '@/types/notes.interface';
 
 export async function getStaticProps() {
   const notes = await getNotes();
   return {
     props: {
+      notes,
       fallback: {
         [unstable_serialize(QUERY_KEYS.notes)]: notes,
       },
@@ -14,20 +16,22 @@ export async function getStaticProps() {
   };
 }
 
-function Home() {
+function Home({ notes }: { notes: NoteInterface[] }) {
   return (
-    <Layout>
+    <RootLayout>
       <div className="overflow-scroll p-8">
-        <p>Welcome</p>
+        <div>
+          <h1 className="text-4xl font-semibold">Welcome to Simple Notes</h1>
+        </div>
       </div>
-    </Layout>
+    </RootLayout>
   );
 }
 
-export default function Page({ fallback }: any) {
+export default function Page({ fallback, notes }: any) {
   return (
     <SWRConfig value={{ fallback }}>
-      <Home />
+      <Home notes={notes} />
     </SWRConfig>
   );
 }

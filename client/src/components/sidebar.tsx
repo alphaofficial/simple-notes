@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { MdMoreHoriz, MdDelete } from 'react-icons/md';
 import useNotes from '@/hooks/useNotes';
 import NotesService from '@/services/notes';
+import { UserButton, useUser } from '@clerk/nextjs';
 
 type NoteListItemProps = {
   note: NoteInterface;
@@ -89,10 +90,18 @@ const ActionListItem: React.FC<ActionListItemProps> = ({
 };
 
 const UserIdItem: React.FC<UserIdItemProps> = () => {
+  const { user } = useUser();
   return (
     <div>
-      <div className="flex flex-row space-x-2 text-md font-semibold">
-        <div>Username</div>
+      <div className="flex flex-row space-x-2 items-center">
+        <div>
+          <UserButton afterSignOutUrl="/" />
+        </div>
+        <div>
+          <p className="text-md font-semibold">
+            {user?.fullName ?? user?.username}
+          </p>
+        </div>
       </div>
     </div>
   );

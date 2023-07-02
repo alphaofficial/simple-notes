@@ -5,9 +5,9 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function RootLayout({ children }: LayoutProps) {
   return (
-    <main>
+    <main className="font-sans">
       <div className="max-h-screen flex flex-row">
         <div
           style={{
