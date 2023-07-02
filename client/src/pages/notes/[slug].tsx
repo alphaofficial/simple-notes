@@ -5,7 +5,7 @@ import { useNoteStore } from '@/store/noteStore';
 import { GetStaticPaths } from 'next';
 import { NoteInterface } from '@/types/notes.interface';
 import { slugify } from '@/utilities/slugify';
-import Layout from '@/components/layout';
+import RootLayout from '@/components/rootLayout';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const notes = await getNotes();
@@ -34,7 +34,7 @@ export default function NotePage({ note }: { note: NoteInterface }) {
     setCurrentNote(note);
   }, [note, setCurrentNote]);
   return (
-    <Layout>
+    <RootLayout>
       <div
         className="overflow-scroll"
         style={{
@@ -43,6 +43,6 @@ export default function NotePage({ note }: { note: NoteInterface }) {
       >
         <Editor note={note} />
       </div>
-    </Layout>
+    </RootLayout>
   );
 }

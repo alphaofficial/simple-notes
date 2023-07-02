@@ -16,6 +16,9 @@ export default function TopBar() {
   const titleBlock = currentNote?.blocks.find(
     (block) => block.type === 'title',
   );
+
+  if (!currentNote) return;
+
   return (
     <div className="h-10 flex flex-row justify-between items-center px-2">
       <div className="flex flex-row items-center space-x-2">
