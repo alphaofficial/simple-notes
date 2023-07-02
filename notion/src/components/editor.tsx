@@ -1,86 +1,26 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 import { useNoteStore } from '@/store/noteStore';
-import useUpdateNoteMutation from '@/hooks/useUpdateNoteMutation';
 import EmojiPicker, { Emoji } from 'emoji-picker-react';
-import { queryClient } from '@/lib/queryClient';
-import { QUERY_KEYS } from '@/hooks/queryKeys';
+import { NoteInterface } from '@/types/notes.interface';
+import NotesService from '@/services/notes';
+import useNotes from '@/hooks/useNotes';
 
 const initialId = v4();
 
-const Editor = () => {
-  const { currentNote, blocks, addBlock, updateBlock } = useNoteStore();
-  const mutation = useUpdateNoteMutation();
+const Editor: FC<{ note: NoteInterface }> = ({ note }) => {
+  const { currentNote, setCurrentNote, blocks, addBlock, updateBlock } =
+    useNoteStore();
+  const { refetch } = useNotes();
   const [selectedId, setSelectedId] = useState(initialId);
   const editorRef = React.useRef<HTMLDivElement>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [emoji, setEmoji] = useState('1f423');
 
-  // TODO: use proper types
-  const handleContentChange = (e: any, id: string) => {
-    const content = e.target.innerText;
-    updateBlock(id, content);
-    const titleBlock = blocks.find((block) => block.type === 'title');
-    mutation.mutate({
-      id: currentNote?.id!,
-      data: {
-        title: titleBlock?.content ?? 'Untitled',
-        blocks,
-      },
-    });
-    setCaretToEnd(id);
-  };
-
-  // TODO: use proper types
-  const handleKeyPress = (e: any) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addNewBlock();
-    }
-
-    if (e.key === '#') {
-      e.preventDefault();
-      const currentBlock = blocks.find((block) => block.id === selectedId);
-      if (currentBlock) {
-        updateBlock(selectedId, `${currentBlock.content}`, 'heading');
-      }
-    }
-
-    if (e.key === '`') {
-      e.preventDefault();
-      const currentBlock = blocks.find((block) => block.id === selectedId);
-      if (currentBlock) {
-        updateBlock(selectedId, `${currentBlock.content}`, 'code');
-      }
-    }
-
-    if (e.key === 'Backspace') {
-      const currentBlock = blocks.find((block) => block.id === selectedId);
-      if (currentBlock && currentBlock.content === '') {
-        e.preventDefault();
-        const currentIndex = blocks.findIndex(
-          (block) => block.id === selectedId,
-        );
-        if (currentIndex > 0) {
-          setSelectedId(blocks[currentIndex - 1].id);
-        }
-      }
-    }
-    if (e.key === '>') {
-      e.preventDefault();
-      const currentBlock = blocks.find((block) => block.id === selectedId);
-      if (currentBlock) {
-        updateBlock(selectedId, `${currentBlock.content}`, 'link');
-      }
-    }
-  };
-
   const setCaretToEnd = (id: string) => {
     setSelectedId(id);
     const el = editorRef.current!;
     const selectedBlock = el.querySelector(`[id="${id}"]`);
-    console.log({ selectedBlock });
     if (selectedBlock) {
       const range = document.createRange();
       const selection = window.getSelection();
@@ -99,7 +39,73 @@ const Editor = () => {
     setCaretToEnd(id);
   };
 
+  // TODO: use proper types
+  const handleContentChange = async (e: any, id: string) => {
+    const content = e.target.innerText;
+    updateBlock(id, content);
+    const titleBlock = blocks.find((block) => block.type === 'title');
+    await NotesService.updateNote(currentNote?.id!, {
+      title: titleBlock?.content ?? 'Untitled',
+      blocks,
+    });
+    await refetch();
+    setCaretToEnd(id);
+  };
+
+  function handleTitleLine(e: any) {
+    e.preventDefault();
+    const currentBlock = blocks.find((block) => block.id === selectedId);
+    if (currentBlock) {
+      updateBlock(selectedId, `${currentBlock.content}`, 'heading');
+    }
+  }
+
+  function handleNextLine(e: any) {
+    e.preventDefault();
+    addNewBlock();
+  }
+
+  function handleCodeBlock(e: any) {
+    e.preventDefault();
+    const currentBlock = blocks.find((block) => block.id === selectedId);
+    if (currentBlock) {
+      updateBlock(selectedId, `${currentBlock.content}`, 'code');
+    }
+  }
+
+  function backspace(e: any) {
+    const currentBlock = blocks.find((block) => block.id === selectedId);
+    if (currentBlock && currentBlock.content === '') {
+      e.preventDefault();
+      const currentIndex = blocks.findIndex((block) => block.id === selectedId);
+      if (currentIndex > 0) {
+        setSelectedId(blocks[currentIndex - 1].id);
+      }
+    }
+  }
+
+  // TODO: use proper types
+  const handleKeyPress = (e: any) => {
+    switch (e.key) {
+      case 'Enter':
+        handleNextLine(e);
+        break;
+      case '#':
+        handleTitleLine(e);
+        break;
+      case '`':
+        handleCodeBlock(e);
+        break;
+      case 'Backspace':
+        backspace(e);
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
+    setCurrentNote(note);
     setCaretToEnd(selectedId);
     if (currentNote?.meta?.emoji) {
       currentNote?.meta?.emoji;
@@ -107,7 +113,7 @@ const Editor = () => {
     } else {
       setEmoji('1f423');
     }
-  }, [selectedId, blocks, currentNote]);
+  }, [note, selectedId, blocks, currentNote, setCurrentNote]);
 
   const defaultBackground =
     'linear-gradient(to right, rgb(29, 78, 216), rgb(30, 64, 175), rgb(17, 24, 39))';
@@ -142,17 +148,14 @@ const Editor = () => {
               onEmojiClick={async (data, ev) => {
                 setEmoji(data.unified);
                 setShowEmojiPicker(false);
-                await mutation.mutateAsync({
-                  id: currentNote?.id!,
-                  data: {
-                    // @ts-ignore
-                    meta: {
-                      ...(currentNote?.meta ?? {}),
-                      emoji: data.unified,
-                    },
+                await NotesService.updateNote(currentNote?.id!, {
+                  // @ts-ignore
+                  meta: {
+                    ...(currentNote?.meta ?? {}),
+                    emoji: data.unified,
                   },
                 });
-                queryClient.invalidateQueries([QUERY_KEYS.notes]);
+                await refetch();
               }}
             />
           </div>

@@ -9,7 +9,7 @@ const API_URL = 'http://localhost:3300';
 export const getNotes = async () => {
   const response = await fetch(`${API_URL}/notes/getNotes`);
   const { data } = await response.json();
-  return data;
+  return data as NoteInterface[];
 };
 
 export const createNote = async (
@@ -37,3 +37,20 @@ export const updateNote = async (id: number, note: UpdateNoteInterface) => {
   const { data } = await response.json();
   return data;
 };
+
+export const deleteNote = async (id: number) => {
+  const response = await fetch(`${API_URL}/notes/deleteNote/${id}`, {
+    method: 'POST',
+  });
+  const { data } = await response.json();
+  return data;
+};
+
+const NotesService = {
+  getNotes,
+  createNote,
+  updateNote,
+  deleteNote,
+};
+
+export default NotesService;

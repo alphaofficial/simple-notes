@@ -1,4 +1,3 @@
-'use client';
 import { useNoteStore } from '@/store/noteStore';
 import { formatDate } from '@/utilities/date-formatter';
 import { Emoji } from 'emoji-picker-react';

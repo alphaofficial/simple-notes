@@ -19,6 +19,7 @@ interface NoteStore {
   updateBlock: (id: string, content: string, blockType?: BlockType) => void;
   setNotes: (notes: NoteInterface[]) => void;
   setCurrentNote: (note: NoteInterface) => void;
+  deleteNote: (id: number) => void;
 }
 
 export const useNoteStore = store.create<NoteStore>((set) => ({
@@ -70,7 +71,13 @@ export const useNoteStore = store.create<NoteStore>((set) => ({
     set(() => ({ notes }));
   },
   setCurrentNote: (note: NoteInterface) => {
+    if (!note) return;
     sessionStorage.setItem('lastNoteId', String(note.id));
     set(() => ({ currentNote: note, blocks: note.blocks }));
+  },
+  deleteNote: (id: number) => {
+    set((state) => ({
+      notes: state.notes.filter((note) => note.id !== id),
+    }));
   },
 }));

@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import { IconType } from 'react-icons';
 import { IoSearchSharp } from 'react-icons/io5';
@@ -6,13 +5,16 @@ import { RxCaretRight } from 'react-icons/rx';
 import { AiOutlineClockCircle, AiFillPlusCircle } from 'react-icons/ai';
 import { BiSolidCog } from 'react-icons/bi';
 import { useNoteStore } from '@/store/noteStore';
-import { NoteInterface } from '@/types/notes.interface';
-import useNotesQuery from '@/hooks/useNotesQuery';
-import useCreateNoteMutation from '@/hooks/useCreateNoteMutation';
-import { queryClient } from '@/lib/queryClient';
+import { CreateNoteInterface, NoteInterface } from '@/types/notes.interface';
 import { v4 } from 'uuid';
 import { truncate } from '@/utilities/truncate';
 import { Emoji } from 'emoji-picker-react';
+import Link from 'next/link';
+import { slugify } from '@/utilities/slugify';
+import { useRouter } from 'next/router';
+import { MdMoreHoriz, MdDelete } from 'react-icons/md';
+import useNotes from '@/hooks/useNotes';
+import NotesService from '@/services/notes';
 
 type NoteListItemProps = {
   note: NoteInterface;
@@ -30,22 +32,43 @@ type UserIdItemProps = {
 };
 
 const NoteListItem: React.FC<NoteListItemProps> = ({ note }) => {
-  const { setCurrentNote } = useNoteStore();
+  const { deleteNote } = useNoteStore();
+  const { refetch } = useNotes();
+
+  async function deleteNoteHandler(e: any) {
+    e.stopPropagation();
+    e.preventDefault();
+    deleteNote(note.id);
+    await NotesService.deleteNote(note.id);
+    await refetch();
+  }
+
   return (
-    <div
-      onClick={() => setCurrentNote(note)}
-      className="flex flex-row items-center space-x-1 px-2 hover:bg-gray-200 py-1 cursor-pointer"
-    >
-      <div className="text-gray-500">
-        <RxCaretRight size={20} className="text-gray-500" />
-      </div>
-      <div className="font-semibold text-gray-500 flex flex-row items-center space-x-2">
-        <div>
-          <Emoji unified={note.meta?.emoji! ?? '1f423'} size={15} />
+    <Link href={`/notes/${slugify(note.title)}:${note.id}`}>
+      <div className="flex flex-row items-center justify-between space-x-1 px-2 hover:bg-gray-200 py-1 cursor-pointer group">
+        <div className="flex flex-row items-center">
+          <div className="text-gray-500">
+            <RxCaretRight size={20} className="text-gray-500" />
+          </div>
+          <div className="font-semibold text-gray-500 flex flex-row items-center space-x-2">
+            <div>
+              <Emoji unified={note.meta?.emoji! ?? '1f423'} size={15} />
+            </div>
+            <div>{truncate(note.title, 30)}</div>
+          </div>
         </div>
-        <div>{truncate(note.title, 30)}</div>
+        <div className="hidden group-hover:block">
+          <div className="flex flex-row items-center space-x-2">
+            <div>
+              <MdMoreHoriz size={20} className="text-gray-500" />
+            </div>
+            <div onClick={deleteNoteHandler}>
+              <MdDelete size={20} className="text-gray-500" />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -76,9 +99,9 @@ const UserIdItem: React.FC<UserIdItemProps> = () => {
 };
 
 export default function Sidebar() {
-  const { notes } = useNotesQuery();
-  const mutation = useCreateNoteMutation();
+  const { notes, refetch, update } = useNotes();
   const { setCurrentNote } = useNoteStore();
+  const router = useRouter();
   const ACTION_LIST = [
     {
       title: 'Search',
@@ -103,7 +126,7 @@ export default function Sidebar() {
       key: 'new-page',
       icon: AiFillPlusCircle,
       onClick: async () => {
-        const response = await mutation.mutateAsync({
+        const payload = {
           title: 'Untitled',
           blocks: [
             {
@@ -120,16 +143,28 @@ export default function Sidebar() {
             },
             emoji: '1f4d3',
           },
-        });
-        // setCurrentNote to the newly created note
+        } as CreateNoteInterface;
+        await update(
+          [
+            ...(notes?.length ? notes : []),
+            { ...payload, id: 0 } as NoteInterface,
+          ],
+          {
+            rollbackOnError: true,
+            populateCache: true,
+            revalidate: false,
+          },
+        );
+        const response = await NotesService.createNote(payload);
         setCurrentNote(response);
-        queryClient.invalidateQueries(['notes']);
+        await refetch();
+        router.push(`/notes/${slugify(response.title)}:${response.id}`);
       },
     },
   ];
 
   return (
-    <div className="h-screen">
+    <div className="h-screen relative">
       <div className="h-10 px-4 flex flex-row items-center">
         <UserIdItem username="Albert" avatar="" />
       </div>
