@@ -6,8 +6,12 @@ export default function useNotes() {
   const { data, error, isLoading, mutate } = useSWR(QUERY_KEYS.notes, getNotes);
   const refetch = async () => await mutate(getNotes());
 
+  const favorites = data?.filter((note) => note.isFavorite);
+  const nonFavorites = data?.filter((note) => !note.isFavorite);
+
   return {
-    notes: data,
+    notes: nonFavorites,
+    favorites,
     error,
     isLoading,
     refetch,

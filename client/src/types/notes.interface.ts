@@ -21,6 +21,8 @@ export type NoteInterface = {
   title: string;
   blocks: Block[];
   meta?: NoteMeta;
+  ownerId: string;
+  isFavorite: boolean;
 };
 
 export type CreateNoteInterface = {

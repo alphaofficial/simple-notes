@@ -3,6 +3,7 @@ import {
   NoteInterface,
   UpdateNoteInterface,
 } from '@/types/notes.interface';
+import { add } from 'date-fns';
 
 const API_URL = 'http://localhost:3300';
 
@@ -78,12 +79,46 @@ export const deleteNote = async (id: number) => {
   return data;
 };
 
+export const addNoteToFavorite = async (id: number): Promise<NoteInterface> => {
+  const response = await fetch(`${API_URL}/notes/addNoteToFavorites`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getUserHeaders(),
+    },
+    body: JSON.stringify({
+      noteId: id,
+    }),
+  });
+  const { data } = await response.json();
+  return data;
+};
+
+export const removeNoteFromFavorite = async (
+  id: number,
+): Promise<NoteInterface> => {
+  const response = await fetch(`${API_URL}/notes/removeNoteFromFavorites`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getUserHeaders(),
+    },
+    body: JSON.stringify({
+      noteId: id,
+    }),
+  });
+  const { data } = await response.json();
+  return data;
+};
+
 const NotesService = {
   getNotes,
   getNote,
   createNote,
   updateNote,
   deleteNote,
+  addNoteToFavorite,
+  removeNoteFromFavorite,
 };
 
 export default NotesService;

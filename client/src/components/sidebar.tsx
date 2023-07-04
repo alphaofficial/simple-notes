@@ -96,7 +96,7 @@ const ActionListItem: React.FC<ActionListItemProps> = ({
   );
 };
 
-const UserIdItem: React.FC<UserIdItemProps> = () => {
+const UserIdItem = () => {
   const { user } = useUser();
   return (
     <div>
@@ -115,7 +115,7 @@ const UserIdItem: React.FC<UserIdItemProps> = () => {
 };
 
 export default function Sidebar() {
-  const { notes, refetch, update } = useNotes();
+  const { notes, favorites, refetch, update } = useNotes();
   const { setCurrentNote } = useNoteStore();
   const router = useRouter();
   const ACTION_LIST = [
@@ -182,7 +182,7 @@ export default function Sidebar() {
   return (
     <div className="h-screen relative">
       <div className="h-10 px-4 flex flex-row items-center">
-        <UserIdItem username="Albert" avatar="" />
+        <UserIdItem />
       </div>
       <div className="text-sm">
         <div className="space-y-2">
@@ -195,13 +195,32 @@ export default function Sidebar() {
             />
           ))}
         </div>
+        {!!favorites?.length && (
+          <div
+            className="mt-8 overflow-scroll"
+            style={{
+              maxHeight: 'calc(100vh - 250px)',
+            }}
+          >
+            <div className="px-4 py-1 font-semibold text-gray-500 uppercase text-xs">
+              Favorites
+            </div>
+            {favorites?.map((note) => (
+              <div key={note.id} className="my-2">
+                <NoteListItem note={note} />
+              </div>
+            ))}
+          </div>
+        )}
         <div
-          className="mt-8 overflow-scroll"
+          className="mt-4 overflow-scroll"
           style={{
             maxHeight: 'calc(100vh - 250px)',
           }}
         >
-          <div className="px-4 py-1 font-semibold text-gray-500">Notes</div>
+          <div className="px-4 py-1 font-bold text-gray-500 uppercase text-xs">
+            Notes
+          </div>
           {notes?.map((note) => (
             <div key={note.id} className="my-2">
               <NoteListItem note={note} />

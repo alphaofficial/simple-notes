@@ -20,6 +20,7 @@ interface NoteStore {
   setNotes: (notes: NoteInterface[]) => void;
   setCurrentNote: (note: NoteInterface) => void;
   deleteNote: (id: number) => void;
+  toggleNoteFavorite: (id: number) => void;
 }
 
 export const useNoteStore = store.create<NoteStore>((set) => ({
@@ -78,6 +79,16 @@ export const useNoteStore = store.create<NoteStore>((set) => ({
   deleteNote: (id: number) => {
     set((state) => ({
       notes: state.notes.filter((note) => note.id !== id),
+    }));
+  },
+  toggleNoteFavorite: (id: number) => {
+    set((state) => ({
+      notes: state.notes.map((note) => {
+        if (note.id === id) {
+          note.isFavorite = !note.isFavorite;
+        }
+        return note;
+      }),
     }));
   },
 }));

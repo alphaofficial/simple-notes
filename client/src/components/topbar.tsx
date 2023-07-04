@@ -3,8 +3,14 @@ import { formatDate } from '@/utilities/date-formatter';
 import { Emoji } from 'emoji-picker-react';
 import React from 'react';
 import { LiaCommentSolid } from 'react-icons/lia';
-import { AiOutlineClockCircle, AiOutlineStar } from 'react-icons/ai';
+import {
+  AiOutlineClockCircle,
+  AiOutlineStar,
+  AiFillStar,
+} from 'react-icons/ai';
 import { BsThreeDots } from 'react-icons/bs';
+import NotesService from '@/services/notes';
+import useNotes from '@/hooks/useNotes';
 
 export type TopBarProps = {
   title: string;
@@ -12,10 +18,24 @@ export type TopBarProps = {
 };
 
 export default function TopBar() {
-  const { currentNote } = useNoteStore();
+  const { currentNote, toggleNoteFavorite, setCurrentNote } = useNoteStore();
+  const { refetch } = useNotes();
   const titleBlock = currentNote?.blocks.find(
     (block) => block.type === 'title',
   );
+
+  async function toggleNoteFavoriteHandler() {
+    console.log({ called: 'toggleNoteFavoriteHandler', currentNote });
+    const beforeToggle = currentNote?.isFavorite;
+    toggleNoteFavorite(currentNote?.id!);
+    setCurrentNote({ ...currentNote!, isFavorite: !currentNote!.isFavorite });
+    const executeTogle = beforeToggle
+      ? NotesService.removeNoteFromFavorite
+      : NotesService.addNoteToFavorite;
+    const note = await executeTogle(currentNote?.id!);
+    setCurrentNote(note);
+    await refetch();
+  }
 
   if (!currentNote) return;
 
@@ -47,8 +67,12 @@ export default function TopBar() {
         <button>
           <AiOutlineClockCircle size={20} />
         </button>
-        <button>
-          <AiOutlineStar size={20} />
+        <button onClick={toggleNoteFavoriteHandler}>
+          {currentNote.isFavorite ? (
+            <AiFillStar size={20} className="text-yellow-500" />
+          ) : (
+            <AiOutlineStar size={20} />
+          )}
         </button>
         <button>
           <BsThreeDots size={20} />
