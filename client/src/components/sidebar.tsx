@@ -9,7 +9,6 @@ import { CreateNoteInterface, NoteInterface } from '@/types/notes.interface';
 import { v4 } from 'uuid';
 import { truncate } from '@/utilities/truncate';
 import { Emoji } from 'emoji-picker-react';
-import Link from 'next/link';
 import { slugify } from '@/utilities/slugify';
 import { useRouter } from 'next/router';
 import { MdMoreHoriz, MdDelete } from 'react-icons/md';
