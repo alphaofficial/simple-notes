@@ -8,7 +8,6 @@ import {
   Post,
   Headers,
 } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
 import { UpdateNoteDto } from './dto/updateNote.dto';
 import {
   CreateNoteReturnType,
@@ -35,44 +34,6 @@ export class NoteController extends BaseController {
     super();
   }
 
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'The note has been successfully created.',
-    schema: {
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          description: 'The id of the note',
-        },
-        title: {
-          type: 'string',
-          description: 'The title of the note',
-        },
-        blocks: {
-          type: 'array',
-          description: 'The blocks of the note',
-          items: {
-            type: 'object',
-            properties: {
-              type: {
-                type: 'string',
-                description: 'The type of the block',
-              },
-              data: {
-                type: 'object',
-                description: 'The data of the block',
-              },
-            },
-          },
-        },
-        meta: {
-          type: 'object',
-          description: 'The meta of the note',
-        },
-      },
-    },
-  })
   @Post('createNote')
   async createNote(
     @Body() createNote: CreateNoteDto,
@@ -92,48 +53,6 @@ export class NoteController extends BaseController {
     }
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'The notes have been successfully retrieved.',
-    schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-
-            description: 'The id of the note',
-          },
-          title: {
-            type: 'string',
-            description: 'The title of the note',
-          },
-          blocks: {
-            type: 'array',
-            description: 'The blocks of the note',
-            items: {
-              type: 'object',
-              properties: {
-                type: {
-                  type: 'string',
-                  description: 'The type of the block',
-                },
-                data: {
-                  type: 'object',
-                  description: 'The data of the block',
-                },
-              },
-            },
-          },
-          meta: {
-            type: 'object',
-            description: 'The meta of the note',
-          },
-        },
-      },
-    },
-  })
   @Get('getNotes')
   async getNotes(
     @Headers('x-notion-userid') userId: string,
@@ -217,6 +136,53 @@ export class NoteController extends BaseController {
       return this.handleSuccessResponse();
     } catch (error) {
       this.logger.error('deleteNote', error.message, {
+        stack: error.stack,
+      });
+      return this.handleErrorResponse(error);
+    }
+  }
+
+  @Post('addNoteToFavorites')
+  async addNoteToFavorites(
+    @Body('noteId') id: string,
+    @Headers('x-notion-userid') userId: string,
+  ): Promise<UpdateNoteReturnType> {
+    try {
+      if (!userId) {
+        throw new MissingUserId();
+      }
+      if (!isNumberString(id)) {
+        throw new InvalidNoteId();
+      }
+      const note = await this.noteService.addNoteToFavorite(userId, Number(id));
+      return this.handleSuccessResponse(note);
+    } catch (error) {
+      this.logger.error('addNoteToFavorites', error.message, {
+        stack: error.stack,
+      });
+      return this.handleErrorResponse(error);
+    }
+  }
+
+  @Post('removeNoteFromFavorites')
+  async removeNoteFromFavorites(
+    @Body('noteId') id: string,
+    @Headers('x-notion-userid') userId: string,
+  ): Promise<UpdateNoteReturnType> {
+    try {
+      if (!userId) {
+        throw new MissingUserId();
+      }
+      if (!isNumberString(id)) {
+        throw new InvalidNoteId();
+      }
+      const note = await this.noteService.removeNoteFromFavorite(
+        userId,
+        Number(id),
+      );
+      return this.handleSuccessResponse(note);
+    } catch (error) {
+      this.logger.error('removeNoteFromFavorites', error.message, {
         stack: error.stack,
       });
       return this.handleErrorResponse(error);

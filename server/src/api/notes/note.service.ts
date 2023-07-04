@@ -40,25 +40,59 @@ export class NoteService implements NoteServiceInterface {
     return notes;
   }
 
-  async getNote(userId: string, id: number): Promise<NoteEntity> {
-    const note = await this.noteRepository.findOne({ id, ownerId: userId });
+  async getNote(userId: string, noteId: number): Promise<NoteEntity> {
+    const note = await this.noteRepository.findOne({
+      id: noteId,
+      ownerId: userId,
+    });
     return note;
   }
 
   async updateNote(
     userId: string,
-    id: number,
+    noteId: number,
     updateDto: UpdateNoteDto,
   ): Promise<NoteEntity> {
-    const note = await this.noteRepository.findOne({ id, ownerId: userId });
+    const note = await this.noteRepository.findOne({
+      id: noteId,
+      ownerId: userId,
+    });
     note.updateNote(updateDto);
     await this.databaseAdapter.em.persistAndFlush(note);
     return note;
   }
 
-  async deleteNote(userId: string, id: number): Promise<void> {
-    const note = await this.noteRepository.findOne({ id, ownerId: userId });
+  async deleteNote(userId: string, noteId: number): Promise<void> {
+    const note = await this.noteRepository.findOne({
+      id: noteId,
+      ownerId: userId,
+    });
     if (!note) return;
     await this.databaseAdapter.em.removeAndFlush(note);
+  }
+
+  async addNoteToFavorite(userId: string, noteId: number): Promise<NoteEntity> {
+    const note = await this.noteRepository.findOne({
+      id: noteId,
+      ownerId: userId,
+    });
+    if (note.isFavorite) return note;
+    note.addToFavorites();
+    await this.databaseAdapter.em.persistAndFlush(note);
+    return note;
+  }
+
+  async removeNoteFromFavorite(
+    userId: string,
+    noteId: number,
+  ): Promise<NoteEntity> {
+    const note = await this.noteRepository.findOne({
+      id: noteId,
+      ownerId: userId,
+    });
+    if (!note.isFavorite) return note;
+    note.removeFromFavorites();
+    await this.databaseAdapter.em.persistAndFlush(note);
+    return note;
   }
 }
