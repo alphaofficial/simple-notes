@@ -6,10 +6,36 @@ import {
 
 const API_URL = 'http://localhost:3300';
 
+const userHeaders = {
+  'x-notion-userid': '',
+};
+
+export const setUserId = (userId: string) => {
+  userHeaders['x-notion-userid'] = userId;
+};
+
+export const getUserHeaders = () => userHeaders;
+
 export const getNotes = async () => {
-  const response = await fetch(`${API_URL}/notes/getNotes`);
+  const response = await fetch(`${API_URL}/notes/getNotes`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...getUserHeaders(),
+    },
+  });
   const { data } = await response.json();
   return data as NoteInterface[];
+};
+
+export const getNote = async (id: number) => {
+  const response = await fetch(`${API_URL}/notes/getNote/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...getUserHeaders(),
+    },
+  });
+  const { data } = await response.json();
+  return data as NoteInterface;
 };
 
 export const createNote = async (
@@ -19,6 +45,7 @@ export const createNote = async (
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getUserHeaders(),
     },
     body: JSON.stringify(note),
   });
@@ -31,6 +58,7 @@ export const updateNote = async (id: number, note: UpdateNoteInterface) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getUserHeaders(),
     },
     body: JSON.stringify(note),
   });
@@ -41,6 +69,10 @@ export const updateNote = async (id: number, note: UpdateNoteInterface) => {
 export const deleteNote = async (id: number) => {
   const response = await fetch(`${API_URL}/notes/deleteNote/${id}`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getUserHeaders(),
+    },
   });
   const { data } = await response.json();
   return data;
@@ -48,6 +80,7 @@ export const deleteNote = async (id: number) => {
 
 const NotesService = {
   getNotes,
+  getNote,
   createNote,
   updateNote,
   deleteNote,

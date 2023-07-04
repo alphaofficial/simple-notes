@@ -6,7 +6,6 @@ import {
   Inject,
   Param,
   Post,
-  UseGuards,
   Headers,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
