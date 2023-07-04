@@ -33,8 +33,9 @@ type UserIdItemProps = {
 };
 
 const NoteListItem: React.FC<NoteListItemProps> = ({ note }) => {
-  const { deleteNote } = useNoteStore();
+  const { deleteNote, setCurrentNote } = useNoteStore();
   const { refetch } = useNotes();
+  const router = useRouter();
 
   async function deleteNoteHandler(e: any) {
     e.stopPropagation();
@@ -44,32 +45,38 @@ const NoteListItem: React.FC<NoteListItemProps> = ({ note }) => {
     await refetch();
   }
 
+  function onClickNote() {
+    setCurrentNote(note);
+    router.push(`/notes/${slugify(note.title)}:${note.id}`);
+  }
+
   return (
-    <Link href={`/notes/${slugify(note.title)}:${note.id}`}>
-      <div className="flex flex-row items-center justify-between space-x-1 px-2 hover:bg-gray-200 py-1 cursor-pointer group">
-        <div className="flex flex-row items-center">
-          <div className="text-gray-500">
-            <RxCaretRight size={20} className="text-gray-500" />
-          </div>
-          <div className="font-semibold text-gray-500 flex flex-row items-center space-x-2">
-            <div>
-              <Emoji unified={note.meta?.emoji! ?? '1f423'} size={15} />
-            </div>
-            <div>{truncate(note.title, 30)}</div>
-          </div>
+    <div
+      onClick={onClickNote}
+      className="flex flex-row items-center justify-between space-x-1 px-2 hover:bg-gray-200 py-1 cursor-pointer group"
+    >
+      <div className="flex flex-row items-center">
+        <div className="text-gray-500">
+          <RxCaretRight size={20} className="text-gray-500" />
         </div>
-        <div className="hidden group-hover:block">
-          <div className="flex flex-row items-center space-x-2">
-            <div>
-              <MdMoreHoriz size={20} className="text-gray-500" />
-            </div>
-            <div onClick={deleteNoteHandler}>
-              <MdDelete size={20} className="text-gray-500" />
-            </div>
+        <div className="font-semibold text-gray-500 flex flex-row items-center space-x-2">
+          <div>
+            <Emoji unified={note.meta?.emoji! ?? '1f423'} size={15} />
+          </div>
+          <div>{truncate(note.title, 30)}</div>
+        </div>
+      </div>
+      <div className="hidden group-hover:block">
+        <div className="flex flex-row items-center space-x-2">
+          <div>
+            <MdMoreHoriz size={20} className="text-gray-500" />
+          </div>
+          <div onClick={deleteNoteHandler}>
+            <MdDelete size={20} className="text-gray-500" />
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

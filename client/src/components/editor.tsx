@@ -105,7 +105,6 @@ const Editor: FC<{ note: NoteInterface }> = ({ note }) => {
   };
 
   useEffect(() => {
-    setCurrentNote(note);
     setCaretToEnd(selectedId);
     if (currentNote?.meta?.emoji) {
       currentNote?.meta?.emoji;
@@ -113,7 +112,7 @@ const Editor: FC<{ note: NoteInterface }> = ({ note }) => {
     } else {
       setEmoji('1f423');
     }
-  }, [note, selectedId, blocks, currentNote, setCurrentNote]);
+  }, [note, selectedId, blocks, currentNote]);
 
   const defaultBackground =
     'linear-gradient(to right, rgb(29, 78, 216), rgb(30, 64, 175), rgb(17, 24, 39))';
