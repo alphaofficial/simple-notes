@@ -7,11 +7,16 @@ export interface NoteServiceInterface {
     createNoteDto: CreateNoteDto,
   ) => Promise<NoteEntity>;
   getNotes: (userId: string) => Promise<NoteEntity[]>;
-  getNote: (userId: string, id: number) => Promise<NoteEntity>;
+  getNote: (userId: string, noteId: number) => Promise<NoteEntity>;
   updateNote: (
     userId: string,
-    id: number,
+    noteId: number,
     updateNoteDto: Partial<NoteEntity>,
   ) => Promise<NoteEntity>;
-  deleteNote: (userId: string, id: number) => Promise<void>;
+  deleteNote: (userId: string, noteId: number) => Promise<void>;
+  addNoteToFavorite: (userId: string, noteId: number) => Promise<NoteEntity>;
+  removeNoteFromFavorite: (
+    userId: string,
+    noteId: number,
+  ) => Promise<NoteEntity>;
 }

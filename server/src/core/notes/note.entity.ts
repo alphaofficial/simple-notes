@@ -1,4 +1,3 @@
-import { t } from '@mikro-orm/core';
 import { BaseEntity } from '../abstract/base.entity';
 import { Block } from '@/api/interfaces/note.interface';
 
@@ -24,5 +23,13 @@ export class NoteEntity extends BaseEntity {
 
   public setOwner(ownerId: string) {
     this.ownerId = ownerId;
+  }
+
+  public addToFavorites() {
+    this.isFavorite = true;
+  }
+
+  public removeFromFavorites() {
+    this.isFavorite = false;
   }
 }
