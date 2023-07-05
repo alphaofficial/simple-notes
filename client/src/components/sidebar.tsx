@@ -114,7 +114,7 @@ const UserIdItem = () => {
 };
 
 export default function Sidebar() {
-  const { notes, favorites, refetch, update } = useNotes();
+  const { notes, favorites, refetch, update: updateNote } = useNotes();
   const { setCurrentNote } = useNoteStore();
   const router = useRouter();
   const ACTION_LIST = [
@@ -159,9 +159,11 @@ export default function Sidebar() {
             emoji: '1f4d3',
           },
         } as CreateNoteInterface;
-        await update(
+        await updateNote(
           [
             ...(notes?.length ? notes : []),
+            // using id zero for optimistic update.
+            // it will be updated after cache invalidation
             { ...payload, id: 0 } as NoteInterface,
           ],
           {
@@ -221,7 +223,7 @@ export default function Sidebar() {
             Notes
           </div>
           {notes?.map((note) => (
-            <div key={note.id} className="my-2">
+            <div key={note.id} className="my-2 transition ease-in">
               <NoteListItem note={note} />
             </div>
           ))}

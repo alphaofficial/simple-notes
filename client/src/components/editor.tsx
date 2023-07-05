@@ -44,7 +44,8 @@ const Editor: FC<{ note: NoteInterface }> = ({ note }) => {
     const content = e.target.innerText;
     updateBlock(id, content);
     const titleBlock = blocks.find((block) => block.type === 'title');
-    await NotesService.updateNote(currentNote?.id!, {
+    await NotesService.updateNote({
+      noteId: currentNote?.id!,
       title: titleBlock?.content ?? 'Untitled',
       blocks,
     });
@@ -131,6 +132,8 @@ const Editor: FC<{ note: NoteInterface }> = ({ note }) => {
           position: 'relative',
           top: '-2.4rem',
           left: '12rem',
+          width: '4rem',
+          height: '4rem',
         }}
       >
         <div
@@ -147,7 +150,8 @@ const Editor: FC<{ note: NoteInterface }> = ({ note }) => {
               onEmojiClick={async (data, ev) => {
                 setEmoji(data.unified);
                 setShowEmojiPicker(false);
-                await NotesService.updateNote(currentNote?.id!, {
+                await NotesService.updateNote({
+                  noteId: currentNote?.id!,
                   // @ts-ignore
                   meta: {
                     ...(currentNote?.meta ?? {}),
