@@ -223,7 +223,7 @@ export default function Sidebar() {
             Notes
           </div>
           {notes?.map((note) => (
-            <div key={note.id} className="my-2 transition ease-in">
+            <div key={note.id} className="my-2">
               <NoteListItem note={note} />
             </div>
           ))}
