@@ -31,4 +31,6 @@ export type CreateNoteInterface = {
   meta?: NoteMeta;
 };
 
-export type UpdateNoteInterface = Partial<CreateNoteInterface>;
+export type UpdateNoteInterface = Partial<CreateNoteInterface> & {
+  noteId: number;
+};

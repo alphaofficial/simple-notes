@@ -3,7 +3,6 @@ import {
   NoteInterface,
   UpdateNoteInterface,
 } from '@/types/notes.interface';
-import { add } from 'date-fns';
 
 const API_URL = 'http://localhost:3300';
 
@@ -54,8 +53,8 @@ export const createNote = async (
   return data;
 };
 
-export const updateNote = async (id: number, note: UpdateNoteInterface) => {
-  const response = await fetch(`${API_URL}/notes/updateNote/${id}`, {
+export const updateNote = async (note: UpdateNoteInterface) => {
+  const response = await fetch(`${API_URL}/notes/updateNote`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -68,12 +67,15 @@ export const updateNote = async (id: number, note: UpdateNoteInterface) => {
 };
 
 export const deleteNote = async (id: number) => {
-  const response = await fetch(`${API_URL}/notes/deleteNote/${id}`, {
+  const response = await fetch(`${API_URL}/notes/deleteNote`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       ...getUserHeaders(),
     },
+    body: JSON.stringify({
+      noteId: id,
+    }),
   });
   const { data } = await response.json();
   return data;
