@@ -1,1 +1,322 @@
-{"openapi":"3.0.0","paths":{"/notes/createNote":{"post":{"operationId":"createNote","parameters":[],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateNoteDto"}}}},"responses":{"201":{"description":"The note has been successfully created.","content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"string","description":"The id of the note"},"title":{"type":"string","description":"The title of the note"},"blocks":{"type":"array","description":"The blocks of the note","items":{"type":"object","properties":{"type":{"type":"string","description":"The type of the block"},"data":{"type":"object","description":"The data of the block"}}}},"meta":{"type":"object","description":"The meta of the note"}}}}}}}}},"/notes/getNotes":{"get":{"operationId":"getNotes","parameters":[],"responses":{"200":{"description":"The notes have been successfully retrieved.","content":{"application/json":{"schema":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string","description":"The id of the note"},"title":{"type":"string","description":"The title of the note"},"blocks":{"type":"array","description":"The blocks of the note","items":{"type":"object","properties":{"type":{"type":"string","description":"The type of the block"},"data":{"type":"object","description":"The data of the block"}}}},"meta":{"type":"object","description":"The meta of the note"}}}}}}}}}},"/notes/getNote/{id}":{"get":{"operationId":"getNote","parameters":[{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":""}}}},"/notes/updateNote/{id}":{"post":{"operationId":"updateNote","parameters":[{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateNoteDto"}}}},"responses":{"201":{"description":""}}}}},"info":{"title":"NotesApp API","description":"The NotesApp API description","version":"1.0","contact":{}},"tags":[],"servers":[],"components":{"schemas":{"CreateNoteDto":{"type":"object","properties":{"title":{"type":"string"},"blocks":{"type":"array","items":{"type":"string"}},"meta":{"type":"object"}},"required":["title","blocks","meta"]},"UpdateNoteDto":{"type":"object","properties":{"title":{"type":"string"},"blocks":{"type":"array","items":{"type":"string"}},"meta":{"type":"object"}}}}}}
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/notes/createNote": {
+      "post": {
+        "operationId": "createNote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateNoteDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The note has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateNoteSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/getNotes": {
+      "get": {
+        "operationId": "getNotes",
+        "responses": {
+          "200": {
+            "description": "The notes have been successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNotesSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/getNote/{id}": {
+      "get": {
+        "operationId": "getNote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNoteSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/updateNote": {
+      "post": {
+        "operationId": "updateNote",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateNoteDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateNoteSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/deleteNote": {
+      "post": {
+        "operationId": "deleteNote",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "noteId": {
+                    "type": "number",
+                    "description": "The id of the note",
+                    "example": 28
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteNoteSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/addNoteToFavorites": {
+      "post": {
+        "operationId": "addNoteToFavorites",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "noteId": {
+                    "type": "number",
+                    "description": "The id of the note",
+                    "example": 28
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNotesSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notes/removeNoteFromFavorites": {
+      "post": {
+        "operationId": "removeNoteFromFavorites",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "noteId": {
+                    "type": "number",
+                    "description": "The id of the note",
+                    "example": 28
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNotesSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "NotesApp API",
+    "description": "The NotesApp API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateNoteDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "blocks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BlockInterface" }
+          },
+          "meta": { "type": "object" }
+        },
+        "required": ["title", "blocks", "meta"]
+      },
+      "UpdateNoteDto": {
+        "type": "object",
+        "properties": {
+          "noteId": { "type": "number", "example": 1 },
+          "title": { "type": "string", "example": "My note", "nullable": true },
+          "blocks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BlockInterface" },
+            "nullable": true
+          },
+          "meta": { "type": "object", "nullable": true }
+        }
+      },
+      "BlockInterface": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the block"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the block"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the block"
+          }
+        }
+      },
+      "NoteInterface": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BlockInterface"
+            }
+          },
+          "meta": { "type": "object" },
+          "isFavorite": { "type": "boolean" },
+          "ownerId": { "type": "string" },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string", "nullable": true }
+        }
+      },
+      "CreateNoteSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": { "type": "number", "example": 201 },
+          "message": { "type": "string", "example": "operation succesful" },
+          "data": {
+            "$ref": "#/components/schemas/NoteInterface"
+          }
+        }
+      },
+      "GetNotesSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": { "type": "number", "example": 200 },
+          "message": { "type": "string", "example": "operation succesful" },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NoteInterface"
+            }
+          }
+        }
+      },
+      "GetNoteSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": { "type": "number", "example": 200 },
+          "message": { "type": "string", "example": "operation succesful" },
+          "data": {
+            "$ref": "#/components/schemas/NoteInterface"
+          }
+        }
+      },
+      "DeleteNoteSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": { "type": "number", "example": 200 },
+          "message": { "type": "string", "example": "operation succesful" }
+        }
+      },
+      "UpdateNoteSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": { "type": "number", "example": 200 },
+          "message": { "type": "string", "example": "operation succesful" },
+          "data": {
+            "$ref": "#/components/schemas/NoteInterface"
+          }
+        }
+      }
+    }
+  }
+}

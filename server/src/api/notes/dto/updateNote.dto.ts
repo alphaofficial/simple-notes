@@ -1,20 +1,25 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Block } from '../../interfaces/note.interface';
 
 export class UpdateNoteDto {
+  @IsNumber()
+  noteId: number;
+
   @IsString()
   @IsOptional()
-  @ApiPropertyOptional()
   title?: string;
 
   @IsArray()
   @IsOptional()
-  @ApiPropertyOptional()
   blocks?: Block[];
 
   @IsObject()
   @IsOptional()
-  @ApiPropertyOptional()
   meta?: Record<string, unknown>;
 }

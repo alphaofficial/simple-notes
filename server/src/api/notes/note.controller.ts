@@ -93,9 +93,8 @@ export class NoteController extends BaseController {
     }
   }
 
-  @Post('updateNote/:id')
+  @Post('updateNote')
   async updateNote(
-    @Param('id') id: string,
     @Body() updateDto: UpdateNoteDto,
     @Headers('x-notion-userid') userId: string,
   ): Promise<UpdateNoteReturnType> {
@@ -103,13 +102,11 @@ export class NoteController extends BaseController {
       if (!userId) {
         throw new MissingUserId();
       }
-      if (!isNumberString(id)) {
-        throw new InvalidNoteId();
-      }
+      const { noteId, ...updatePayload } = updateDto;
       const data = await this.noteService.updateNote(
         userId,
-        Number(id),
-        updateDto,
+        noteId,
+        updatePayload,
       );
       return this.handleSuccessResponse(data);
     } catch (error) {
@@ -120,19 +117,16 @@ export class NoteController extends BaseController {
     }
   }
 
-  @Post('deleteNote/:id')
+  @Post('deleteNote')
   async deleteNote(
-    @Param('id') id: string,
+    @Body('noteId') noteId: number,
     @Headers('x-notion-userid') userId: string,
   ): Promise<DeleteNoteReturnType> {
     try {
       if (!userId) {
         throw new MissingUserId();
       }
-      if (!isNumberString(id)) {
-        throw new InvalidNoteId();
-      }
-      await this.noteService.deleteNote(userId, Number(id));
+      await this.noteService.deleteNote(userId, Number(noteId));
       return this.handleSuccessResponse();
     } catch (error) {
       this.logger.error('deleteNote', error.message, {
@@ -144,17 +138,14 @@ export class NoteController extends BaseController {
 
   @Post('addNoteToFavorites')
   async addNoteToFavorites(
-    @Body('noteId') id: string,
+    @Body('noteId') noteId: number,
     @Headers('x-notion-userid') userId: string,
   ): Promise<UpdateNoteReturnType> {
     try {
       if (!userId) {
         throw new MissingUserId();
       }
-      if (!isNumberString(id)) {
-        throw new InvalidNoteId();
-      }
-      const note = await this.noteService.addNoteToFavorite(userId, Number(id));
+      const note = await this.noteService.addNoteToFavorite(userId, noteId);
       return this.handleSuccessResponse(note);
     } catch (error) {
       this.logger.error('addNoteToFavorites', error.message, {
@@ -166,19 +157,16 @@ export class NoteController extends BaseController {
 
   @Post('removeNoteFromFavorites')
   async removeNoteFromFavorites(
-    @Body('noteId') id: string,
+    @Body('noteId') noteId: number,
     @Headers('x-notion-userid') userId: string,
   ): Promise<UpdateNoteReturnType> {
     try {
       if (!userId) {
-        throw new MissingUserId();
-      }
-      if (!isNumberString(id)) {
-        throw new InvalidNoteId();
+        throw new MissingUserId(); // TODO: move to middleware
       }
       const note = await this.noteService.removeNoteFromFavorite(
         userId,
-        Number(id),
+        noteId,
       );
       return this.handleSuccessResponse(note);
     } catch (error) {
